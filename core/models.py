@@ -9,10 +9,16 @@ class TipoProducto(models.Model):
         return self.nombreTipoProducto
 
 
+class Marca(models.Model):
+    nombre_marca = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre_marca
+
 class Producto(models.Model):
     imagen = models.ImageField(upload_to="productos", blank=True, null=True)
     nombre = models.CharField(max_length=50)
-    marca = models.CharField(max_length=50)
+    marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     descripcion = models.CharField(max_length=500)
     precio = models.IntegerField()
     stock = models.IntegerField()

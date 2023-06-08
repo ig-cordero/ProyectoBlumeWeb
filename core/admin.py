@@ -7,6 +7,10 @@ class TipoProductoAdmin(admin.ModelAdmin):
     readonly_fields = ("id",)
     list_display = ['id', 'nombreTipoProducto']
 
+class MarcaAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_display = ['id', 'nombre_marca']
+
 class ProductoAdmin(admin.ModelAdmin):
     readonly_fields = ("id",)
     list_display = ['nombre', 'marca', 'descripcion', 'precio', 'stock', 'tipo', 'creado_en', 'modificado_en', 'imagen']
@@ -30,6 +34,7 @@ class MensajeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(TipoProducto, TipoProductoAdmin )
+admin.site.register(Marca, MarcaAdmin )
 admin.site.register(Mensaje, MensajeAdmin)
 admin.site.register(Producto, ProductoAdmin )
 admin.site.register(Carrito, CarritoAdmin)
