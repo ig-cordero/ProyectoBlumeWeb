@@ -63,7 +63,7 @@ def arbustos(request):
     return render(request, 'core/productos/arbustos.html', data)
 
 def flores(request):
-    productos = Producto.objects.filter(tipo_id = "2").all()
+    productos = Producto.objects.filter(tipo_id = "2")
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
     try:
@@ -79,7 +79,7 @@ def flores(request):
     return render(request, 'core/productos/flores.html', data)
 
 def sustratos(request):
-    productos = Producto.objects.filter(tipo_id = "3").all()
+    productos = Producto.objects.filter(tipo_id = "3")
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
     try:
@@ -95,7 +95,7 @@ def sustratos(request):
     return render(request, 'core/productos/sustratos.html', data)
 
 def macetas(request):
-    productos = Producto.objects.filter(tipo_id = "4").all()
+    productos = Producto.objects.filter(tipo_id = "4")
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
     try:
@@ -305,24 +305,50 @@ def eliminarm(request, id):
 def carrito(request):
     respuesta2 = requests.get('https://mindicador.cl/api/dolar')
     monedas = respuesta2.json()
-
-    valor_carrito = 5000
-    valor_usd = monedas['serie'][0]['valor']
-
-    valor_total = valor_carrito/valor_usd
     productos = Carrito.objects.filter(id_usuario = request.user.id).all()
+
+    precio_clp = 0
+    for producto in productos:
+        precio_clp = precio_clp + producto.subtotal_producto
+
+    valor_usd = monedas['serie'][0]['valor']
+    precio_usd = precio_clp/valor_usd
+
     data = {
         'listaProductos': productos,
-        'valor' : round(valor_total, 2),
+        'valor' : round(precio_usd, 2),
+        'precio_clp': precio_clp,
     }
     
     return render(request, 'core/carrito.html', data)
 
 def car_agregar(request, id):
+    if Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).exists():
+        carrito = Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).first()
+
+        #Verifica que no se puedan agregar cantidades mayores al stock
+        if carrito.cantidad_prod == carrito.producto_carrito.stock:
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+        carrito.cantidad_prod = carrito.cantidad_prod + 1
+        carrito.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
     nuevo_item_carrito = Carrito()
     nuevo_item_carrito.id_usuario = User.objects.get(id = request.user.id)
     nuevo_item_carrito.producto_carrito = Producto.objects.get(id = id)
+    nuevo_item_carrito.cantidad_prod = 1
     nuevo_item_carrito.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+#Esta funcion resta en 1 la cantidad del producto
+def car_una_cantidad_menos(request, id):
+    carrito = Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).first()
+    if carrito.cantidad_prod == 1:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    carrito.cantidad_prod = carrito.cantidad_prod - 1
+    carrito.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

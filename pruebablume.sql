@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-06-2023 a las 15:48:37
+-- Tiempo de generación: 08-06-2023 a las 16:41:34
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -212,7 +212,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-06 13:24:09.613609', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
+(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-08 14:06:54.513182', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
 
 -- --------------------------------------------------------
 
@@ -254,6 +254,24 @@ CREATE TABLE `core_carrito` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `core_marca`
+--
+
+CREATE TABLE `core_marca` (
+  `id` bigint(20) NOT NULL,
+  `nombre_marca` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `core_marca`
+--
+
+INSERT INTO `core_marca` (`id`, `nombre_marca`) VALUES
+(1, 'Blume');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `core_mensaje`
 --
 
@@ -290,7 +308,7 @@ CREATE TABLE `core_producto` (
   `id` bigint(20) NOT NULL,
   `imagen` varchar(100) DEFAULT NULL,
   `nombre` varchar(50) NOT NULL,
-  `marca` varchar(50) NOT NULL,
+  `marca_id` bigint(20) NOT NULL,
   `descripcion` varchar(500) NOT NULL,
   `precio` int(11) NOT NULL,
   `stock` int(11) NOT NULL,
@@ -303,18 +321,18 @@ CREATE TABLE `core_producto` (
 -- Volcado de datos para la tabla `core_producto`
 --
 
-INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca`, `descripcion`, `precio`, `stock`, `tipo_id`, `creado_en`, `modificado_en`) VALUES
-(1, 'productos/vaquita.gif', 'Arbusto MySQL', 'Blume', 'Esto es una prueba', 111, 11, 1, '2023-06-06', NULL),
-(2, 'productos/arb-nube.jpg', 'Arbusto Nube', 'Blume', 'Arbusto Nube', 2222, 10, 1, '2023-06-06', NULL),
-(3, 'productos/arkein.webp', 'Arbusto Arbusto', 'Blume', 'Arbusto Arbusto', 2222, 10, 1, '2023-06-06', NULL),
-(4, 'productos/cultivador-jardin.webp', 'Cultivador', 'Blume', 'Cultivador', 5900, 10, 5, '2023-06-06', NULL),
-(5, 'productos/flor.jpg', 'Flor Loto', 'Blume', 'Flor Loto', 6666, 10, 2, '2023-06-06', NULL),
-(6, 'productos/Flor4.webp', 'Girasoles', 'Blume', 'Girasoles', 990, 15, 2, '2023-06-06', NULL),
-(7, 'productos/mac5.jpg', 'Macetero bob patiño', 'Blume', 'Macetero bob patiño', 9990, 10, 4, '2023-06-06', NULL),
-(8, 'productos/mac6.jpg', 'Cilindro Cyan', 'Blume', 'Macetero Cilindro Cyan', 9900, 10, 4, '2023-06-06', NULL),
-(9, 'productos/tijeras-poda.webp', 'Tijera poda', 'Blume', 'Tijera poda', 6990, 10, 5, '2023-06-06', NULL),
-(10, 'productos/th3.jpg', 'Sustrato rejuvenedor', 'Blume', 'Sustrato rejuvenedor', 15990, 5, 3, '2023-06-06', NULL),
-(11, 'productos/th3_UZrHTlh.jpg', 'Tierra de Hojas', 'Blume', 'Tierra de Hojas organico', 15990, 10, 3, '2023-06-06', NULL);
+INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca_id`, `descripcion`, `precio`, `stock`, `tipo_id`, `creado_en`, `modificado_en`) VALUES
+(1, 'productos/vaquita.gif', 'Arbusto MySQL', 1, 'Esto es una prueba', 111, 11, 1, '2023-06-06', NULL),
+(2, 'productos/arb-nube.jpg', 'Arbusto Nube', 1, 'Arbusto Nube', 2222, 10, 1, '2023-06-06', NULL),
+(3, 'productos/arkein.webp', 'Arbusto Arbusto', 1, 'Arbusto Arbusto', 2222, 10, 1, '2023-06-06', NULL),
+(4, 'productos/cultivador-jardin.webp', 'Cultivador', 1, 'Cultivador', 5900, 10, 5, '2023-06-06', NULL),
+(5, 'productos/flor.jpg', 'Flor Loto', 1, 'Flor Loto', 6666, 10, 2, '2023-06-06', NULL),
+(6, 'productos/Flor4.webp', 'Girasoles', 1, 'Girasoles', 990, 15, 2, '2023-06-06', NULL),
+(7, 'productos/mac5.jpg', 'Macetero bob patiño', 1, 'Macetero bob patiño', 9990, 10, 4, '2023-06-06', NULL),
+(8, 'productos/mac6.jpg', 'Cilindro Cyan', 1, 'Macetero Cilindro Cyan', 9900, 10, 4, '2023-06-06', NULL),
+(9, 'productos/tijeras-poda.webp', 'Tijera poda', 1, 'Tijera poda', 6990, 10, 5, '2023-06-06', NULL),
+(10, 'productos/th3.jpg', 'Sustrato rejuvenedor', 1, 'Sustrato rejuvenedor', 15990, 5, 3, '2023-06-06', NULL),
+(11, 'productos/th3_UZrHTlh.jpg', 'Tierra de Hojas', 1, 'Tierra de Hojas organico', 15990, 10, 3, '2023-06-06', NULL);
 
 -- --------------------------------------------------------
 
@@ -372,7 +390,8 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (10, '2023-06-06 13:44:09.996341', '8', 'Cilindro Cyan', 1, '[{\"added\": {}}]', 9, 1),
 (11, '2023-06-06 13:44:38.371063', '9', 'Tijera poda', 1, '[{\"added\": {}}]', 9, 1),
 (12, '2023-06-06 13:45:17.163953', '10', 'Sustrato rejuvenedor', 1, '[{\"added\": {}}]', 9, 1),
-(13, '2023-06-06 13:45:53.739820', '11', 'Tierra de Hojas', 1, '[{\"added\": {}}]', 9, 1);
+(13, '2023-06-06 13:45:53.739820', '11', 'Tierra de Hojas', 1, '[{\"added\": {}}]', 9, 1),
+(14, '2023-06-08 14:15:58.549458', '1', 'Blume', 1, '[{\"added\": {}}]', 13, 1);
 
 -- --------------------------------------------------------
 
@@ -398,6 +417,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (5, 'auth', 'user'),
 (6, 'contenttypes', 'contenttype'),
 (11, 'core', 'carrito'),
+(13, 'core', 'marca'),
 (10, 'core', 'mensaje'),
 (12, 'core', 'orden'),
 (9, 'core', 'producto'),
@@ -479,7 +499,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (55, 'core', '0008_mensaje', '2023-06-06 13:15:59.727749'),
 (56, 'core', '0009_carrito', '2023-06-06 13:15:59.837849'),
 (57, 'core', '0010_orden', '2023-06-06 13:15:59.921210'),
-(58, 'sessions', '0001_initial', '2023-06-06 13:15:59.948216');
+(58, 'sessions', '0001_initial', '2023-06-06 13:15:59.948216'),
+(59, 'core', '0011_marca_alter_producto_marca', '2023-06-08 14:23:46.488372');
 
 -- --------------------------------------------------------
 
@@ -498,6 +519,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('0k32irqcoezdxq1o46azl15ovkfrngpg', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7GHu:coJkVf7MsCvkQDTr-HqO2N37mG74OZJ9ZS9_YjFrC6c', '2023-06-22 14:06:54.515182'),
 ('1r73ur2f94g7luz9jifiwmyj50y8byjh', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q6WfR:DJK4kjcfg2YpBxeQosyBdioJT4XNAnfBY327CdHMwiY', '2023-06-20 13:24:09.615610');
 
 --
@@ -565,6 +587,12 @@ ALTER TABLE `core_carrito`
   ADD KEY `core_carrito_producto_carrito_id_45e226fd_fk_core_producto_id` (`producto_carrito_id`);
 
 --
+-- Indices de la tabla `core_marca`
+--
+ALTER TABLE `core_marca`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `core_mensaje`
 --
 ALTER TABLE `core_mensaje`
@@ -583,7 +611,8 @@ ALTER TABLE `core_orden`
 --
 ALTER TABLE `core_producto`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `core_producto_tipo_id_e0e92ad1_fk_core_tipoproducto_id` (`tipo_id`);
+  ADD KEY `core_producto_tipo_id_e0e92ad1_fk_core_tipoproducto_id` (`tipo_id`),
+  ADD KEY `core_producto_marca_id_b2651e7a` (`marca_id`);
 
 --
 -- Indices de la tabla `core_tipoproducto`
@@ -672,6 +701,12 @@ ALTER TABLE `core_carrito`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `core_marca`
+--
+ALTER TABLE `core_marca`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `core_mensaje`
 --
 ALTER TABLE `core_mensaje`
@@ -699,19 +734,19 @@ ALTER TABLE `core_tipoproducto`
 -- AUTO_INCREMENT de la tabla `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Restricciones para tablas volcadas

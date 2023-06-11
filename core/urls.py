@@ -32,6 +32,7 @@ urlpatterns = [
         #Carrito
         path('carrito/', carrito, name="carrito"),
         path('car_agregar/<id>/', car_agregar, name="carrito_agregar"),
+        path('car_una_cantidad_menos/<id>/', car_una_cantidad_menos, name="carrito_menos"),
         path('car_eliminar/<id>/', car_eliminar, name="carrito_eliminar"),
         path('car_eliminartodo/', car_eliminar_todo, name="carrito_borra_todo"),
         #Perfil

@@ -48,6 +48,11 @@ class Carrito(models.Model):
     cantidad_prod = models.IntegerField(default=1)
     def __str__(self):
         return str(self.id_usuario)
+    
+    @property
+    def subtotal_producto(self):
+        precio = self.producto_carrito.precio * self.cantidad_prod
+        return precio
 
 class Orden(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
