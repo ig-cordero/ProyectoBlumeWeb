@@ -54,10 +54,26 @@ class Carrito(models.Model):
         precio = self.producto_carrito.precio * self.cantidad_prod
         return precio
 
+class EstadoOrden(models.Model):
+    estado_orden = models.CharField(max_length=50)
+
 class Orden(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad_prod = models.IntegerField(default=1)
-    total = models.IntegerField()
+    precio_orden = models.IntegerField()
+    estado_orden = models.ForeignKey(EstadoOrden, on_delete=models.CASCADE)
+    creado_en = models.DateField()
+    modificado_en = models.DateField(blank=True, null=True)
     def __str__(self):
         return str(self.id_usuario)
+
+class OrdenProducto(models.Model):
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad_prod = models.IntegerField(default=1)
+
+    class Meta:
+        unique_together = ('orden', 'producto')
+
+    def __str__(self):
+        return str(self.orden)
+

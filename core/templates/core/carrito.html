@@ -10,6 +10,7 @@
         <br>
         <h1>Carrito de compras</h1>
         <br>
+        <a href="{% url 'carrito_borra_todo' %}" class="btn btn-danger mb-3 me-4" style="float: left;"><i class="fa-regular fa-trash-can"></i> borrar todo</a>
     </div>
     <div class="col-2"></div>
     </div>
@@ -30,8 +31,9 @@
                                         <th scope="col"></th>
                                         <th scope="col">PRODUCTO</th>
                                         <th scope="col"></th>
+                                        <th scope="col">STOCK</th>
                                         <th scope="col">PRECIO</th>
-                                        <th scope="col">CANTIDAD</th>
+                                        <th scope="col">CANTIDAD (Reservado)</th>
                                         <th scope="col">SUBTOTAL</th>
                                       </tr>
                                     </thead>
@@ -54,12 +56,15 @@
                                             </td>
                                             <!--3 nombre-->
                                             <td class="align-middle"><h7 style="">{{ aux.producto_carrito.nombre }} </h7></td>
-                                            <!--4 PRECIO-->
+
+                                            <!--4 STOCK-->
+                                            <td class="align-middle">{{ aux.producto_carrito.stock | intcomma }}</td>
+                                            <!--5 PRECIO-->
                                             <td class="align-middle">{{ aux.producto_carrito.precio | intcomma }}</td>
-                                            <!--5 CANTIDAD-->   
+                                            <!--6 CANTIDAD-->   
                                             <!-- <td class="align-middle"><input value="1" min="1" max="{{ aux.producto_carrito.stock }}" type="number" id="idCantidad" class="form-control" /></td> -->
                                             <td class="align-middle"><a href="{% url 'carrito_menos' aux.producto_carrito.id %}"> <i class="fa-regular fa-square-caret-down fa-lg"></i> </a> {{ aux.cantidad_prod}} <a href="{% url 'carrito_agregar' aux.producto_carrito.id %}"><i class="fa-regular fa-square-caret-up fa-lg"></i></a> </td> 
-                                            <!--6 SUBTOTAL-->
+                                            <!--7 SUBTOTAL-->
                                             <td class="align-middle"><h7 style=""> {{ aux.subtotal_producto | intcomma }} </h7></td>
 
                                         </tr>
@@ -75,6 +80,7 @@
                             <p>Precio en pesos chilenos: {{ precio_clp | intcomma }}</p>
                             <p>Precio en dolares: {{ valor }}</p>
                             <div id="btnPaypal"> </div>
+                            <p><a class="btn btn-warning btn-lg" href="#" role="button"> <i class="fa-solid fa-cash-register"></i> Proceder al pago</a></p>
                         </div>
                     </div>
                 </div>         

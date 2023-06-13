@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-06-2023 a las 16:41:34
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.2.0
+-- Tiempo de generación: 14-06-2023 a las 01:57:29
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -185,7 +185,19 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (45, 'Can add orden', 12, 'add_orden'),
 (46, 'Can change orden', 12, 'change_orden'),
 (47, 'Can delete orden', 12, 'delete_orden'),
-(48, 'Can view orden', 12, 'view_orden');
+(48, 'Can view orden', 12, 'view_orden'),
+(49, 'Can add marca', 13, 'add_marca'),
+(50, 'Can change marca', 13, 'change_marca'),
+(51, 'Can delete marca', 13, 'delete_marca'),
+(52, 'Can view marca', 13, 'view_marca'),
+(53, 'Can add estado orden', 14, 'add_estadoorden'),
+(54, 'Can change estado orden', 14, 'change_estadoorden'),
+(55, 'Can delete estado orden', 14, 'delete_estadoorden'),
+(56, 'Can view estado orden', 14, 'view_estadoorden'),
+(57, 'Can add orden producto', 15, 'add_ordenproducto'),
+(58, 'Can change orden producto', 15, 'change_ordenproducto'),
+(59, 'Can delete orden producto', 15, 'delete_ordenproducto'),
+(60, 'Can view orden producto', 15, 'view_ordenproducto');
 
 -- --------------------------------------------------------
 
@@ -212,7 +224,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-08 14:06:54.513182', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
+(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-10 02:37:18.000998', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
 
 -- --------------------------------------------------------
 
@@ -250,6 +262,29 @@ CREATE TABLE `core_carrito` (
   `id_usuario_id` int(11) NOT NULL,
   `producto_carrito_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `core_estadoorden`
+--
+
+CREATE TABLE `core_estadoorden` (
+  `id` bigint(20) NOT NULL,
+  `estado_orden` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `core_estadoorden`
+--
+
+INSERT INTO `core_estadoorden` (`id`, `estado_orden`) VALUES
+(1, 'En Proceso'),
+(2, 'Completada'),
+(3, 'Cancelada'),
+(4, 'Lista para despacho'),
+(5, 'En camino'),
+(6, 'En tienda, lista para entrega');
 
 -- --------------------------------------------------------
 
@@ -292,9 +327,23 @@ CREATE TABLE `core_mensaje` (
 
 CREATE TABLE `core_orden` (
   `id` bigint(20) NOT NULL,
+  `precio_orden` int(11) NOT NULL,
+  `creado_en` date NOT NULL,
+  `modificado_en` date DEFAULT NULL,
+  `estado_orden_id` bigint(20) NOT NULL,
+  `id_usuario_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `core_ordenproducto`
+--
+
+CREATE TABLE `core_ordenproducto` (
+  `id` bigint(20) NOT NULL,
   `cantidad_prod` int(11) NOT NULL,
-  `total` int(11) NOT NULL,
-  `id_usuario_id` int(11) NOT NULL,
+  `orden_id` bigint(20) NOT NULL,
   `producto_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -322,16 +371,16 @@ CREATE TABLE `core_producto` (
 --
 
 INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca_id`, `descripcion`, `precio`, `stock`, `tipo_id`, `creado_en`, `modificado_en`) VALUES
-(1, 'productos/vaquita.gif', 'Arbusto MySQL', 1, 'Esto es una prueba', 111, 11, 1, '2023-06-06', NULL),
-(2, 'productos/arb-nube.jpg', 'Arbusto Nube', 1, 'Arbusto Nube', 2222, 10, 1, '2023-06-06', NULL),
+(1, 'productos/vaquita.gif', 'Vaquita de Prueba MySQL', 1, 'Esto es una prueba', 111, 4, 1, '2023-06-06', '2023-06-16'),
+(2, 'productos/arb-nube.jpg', 'Arbusto Nube', 1, 'Arbusto Nube', 2222, 11, 1, '2023-06-06', NULL),
 (3, 'productos/arkein.webp', 'Arbusto Arbusto', 1, 'Arbusto Arbusto', 2222, 10, 1, '2023-06-06', NULL),
 (4, 'productos/cultivador-jardin.webp', 'Cultivador', 1, 'Cultivador', 5900, 10, 5, '2023-06-06', NULL),
 (5, 'productos/flor.jpg', 'Flor Loto', 1, 'Flor Loto', 6666, 10, 2, '2023-06-06', NULL),
-(6, 'productos/Flor4.webp', 'Girasoles', 1, 'Girasoles', 990, 15, 2, '2023-06-06', NULL),
+(6, 'productos/Flor4.webp', 'Girasoles', 1, 'Girasoles', 990, 17, 2, '2023-06-06', NULL),
 (7, 'productos/mac5.jpg', 'Macetero bob patiño', 1, 'Macetero bob patiño', 9990, 10, 4, '2023-06-06', NULL),
 (8, 'productos/mac6.jpg', 'Cilindro Cyan', 1, 'Macetero Cilindro Cyan', 9900, 10, 4, '2023-06-06', NULL),
 (9, 'productos/tijeras-poda.webp', 'Tijera poda', 1, 'Tijera poda', 6990, 10, 5, '2023-06-06', NULL),
-(10, 'productos/th3.jpg', 'Sustrato rejuvenedor', 1, 'Sustrato rejuvenedor', 15990, 5, 3, '2023-06-06', NULL),
+(10, 'productos/th3.jpg', 'Sustrato rejuvenedor', 1, 'Sustrato rejuvenedor', 15990, 10, 3, '2023-06-06', NULL),
 (11, 'productos/th3_UZrHTlh.jpg', 'Tierra de Hojas', 1, 'Tierra de Hojas organico', 15990, 10, 3, '2023-06-06', NULL);
 
 -- --------------------------------------------------------
@@ -417,9 +466,11 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (5, 'auth', 'user'),
 (6, 'contenttypes', 'contenttype'),
 (11, 'core', 'carrito'),
+(14, 'core', 'estadoorden'),
 (13, 'core', 'marca'),
 (10, 'core', 'mensaje'),
 (12, 'core', 'orden'),
+(15, 'core', 'ordenproducto'),
 (9, 'core', 'producto'),
 (8, 'core', 'tipoproducto'),
 (7, 'sessions', 'session');
@@ -500,7 +551,9 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (56, 'core', '0009_carrito', '2023-06-06 13:15:59.837849'),
 (57, 'core', '0010_orden', '2023-06-06 13:15:59.921210'),
 (58, 'sessions', '0001_initial', '2023-06-06 13:15:59.948216'),
-(59, 'core', '0011_marca_alter_producto_marca', '2023-06-08 14:23:46.488372');
+(59, 'core', '0011_marca_alter_producto_marca', '2023-06-08 14:23:46.488372'),
+(60, 'core', '0012_delete_orden', '2023-06-11 23:01:33.090392'),
+(61, 'core', '0013_estadoorden_orden_ordenproducto', '2023-06-12 00:54:18.261482');
 
 -- --------------------------------------------------------
 
@@ -520,7 +573,8 @@ CREATE TABLE `django_session` (
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('0k32irqcoezdxq1o46azl15ovkfrngpg', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7GHu:coJkVf7MsCvkQDTr-HqO2N37mG74OZJ9ZS9_YjFrC6c', '2023-06-22 14:06:54.515182'),
-('1r73ur2f94g7luz9jifiwmyj50y8byjh', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q6WfR:DJK4kjcfg2YpBxeQosyBdioJT4XNAnfBY327CdHMwiY', '2023-06-20 13:24:09.615610');
+('1r73ur2f94g7luz9jifiwmyj50y8byjh', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q6WfR:DJK4kjcfg2YpBxeQosyBdioJT4XNAnfBY327CdHMwiY', '2023-06-20 13:24:09.615610'),
+('6txynpdkh0wh1tuaz5ue8iroh0a2aiyx', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7oTe:xcpL4VG_ZL59GzT9RS7alA_OmzEQTywxS1Pa8aA60Fg', '2023-06-24 02:37:18.004178');
 
 --
 -- Índices para tablas volcadas
@@ -587,6 +641,12 @@ ALTER TABLE `core_carrito`
   ADD KEY `core_carrito_producto_carrito_id_45e226fd_fk_core_producto_id` (`producto_carrito_id`);
 
 --
+-- Indices de la tabla `core_estadoorden`
+--
+ALTER TABLE `core_estadoorden`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `core_marca`
 --
 ALTER TABLE `core_marca`
@@ -603,8 +663,16 @@ ALTER TABLE `core_mensaje`
 --
 ALTER TABLE `core_orden`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `core_orden_id_usuario_id_2ff524b5_fk_auth_user_id` (`id_usuario_id`),
-  ADD KEY `core_orden_producto_id_489a3fee_fk_core_producto_id` (`producto_id`);
+  ADD KEY `core_orden_estado_orden_id_6cc261ab_fk_core_estadoorden_id` (`estado_orden_id`),
+  ADD KEY `core_orden_id_usuario_id_2ff524b5_fk_auth_user_id` (`id_usuario_id`);
+
+--
+-- Indices de la tabla `core_ordenproducto`
+--
+ALTER TABLE `core_ordenproducto`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `core_ordenproducto_orden_id_producto_id_a51afedc_uniq` (`orden_id`,`producto_id`),
+  ADD KEY `core_ordenproducto_producto_id_5b9951d7_fk_core_producto_id` (`producto_id`);
 
 --
 -- Indices de la tabla `core_producto`
@@ -674,7 +742,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
@@ -698,7 +766,13 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `core_carrito`
 --
 ALTER TABLE `core_carrito`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT de la tabla `core_estadoorden`
+--
+ALTER TABLE `core_estadoorden`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `core_marca`
@@ -716,6 +790,12 @@ ALTER TABLE `core_mensaje`
 -- AUTO_INCREMENT de la tabla `core_orden`
 --
 ALTER TABLE `core_orden`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `core_ordenproducto`
+--
+ALTER TABLE `core_ordenproducto`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -740,13 +820,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- Restricciones para tablas volcadas
@@ -790,8 +870,15 @@ ALTER TABLE `core_carrito`
 -- Filtros para la tabla `core_orden`
 --
 ALTER TABLE `core_orden`
-  ADD CONSTRAINT `core_orden_id_usuario_id_2ff524b5_fk_auth_user_id` FOREIGN KEY (`id_usuario_id`) REFERENCES `auth_user` (`id`),
-  ADD CONSTRAINT `core_orden_producto_id_489a3fee_fk_core_producto_id` FOREIGN KEY (`producto_id`) REFERENCES `core_producto` (`id`);
+  ADD CONSTRAINT `core_orden_estado_orden_id_6cc261ab_fk_core_estadoorden_id` FOREIGN KEY (`estado_orden_id`) REFERENCES `core_estadoorden` (`id`),
+  ADD CONSTRAINT `core_orden_id_usuario_id_2ff524b5_fk_auth_user_id` FOREIGN KEY (`id_usuario_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Filtros para la tabla `core_ordenproducto`
+--
+ALTER TABLE `core_ordenproducto`
+  ADD CONSTRAINT `core_ordenproducto_orden_id_97cf6a78_fk_core_orden_id` FOREIGN KEY (`orden_id`) REFERENCES `core_orden` (`id`),
+  ADD CONSTRAINT `core_ordenproducto_producto_id_5b9951d7_fk_core_producto_id` FOREIGN KEY (`producto_id`) REFERENCES `core_producto` (`id`);
 
 --
 -- Filtros para la tabla `core_producto`
