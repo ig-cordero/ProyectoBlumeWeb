@@ -32,3 +32,9 @@ class MensajeForm(ModelForm):
             'creado_en' : forms.SelectDateWidget(years=range(2020,2030)),
             'modificado_en' : forms.SelectDateWidget(years=range(2020,2030))
         }
+
+class CustomUserForm(UserCreationForm):
+ 
+    class meta:
+        model = User
+        fields = ['username',"password1","password2"]

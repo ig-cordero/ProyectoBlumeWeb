@@ -8,6 +8,8 @@ from django.contrib import messages
 from rest_framework import viewsets
 from .serializers import *
 import requests
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 #Creando una clase que va a permitir la transformacion
@@ -353,3 +355,25 @@ def a(request, id):
     nueva_orden.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def registrar(request): 
+    data = {
+         'form': CustomUserForm()
+    }
+    
+    if request.method == 'POST':
+        formulario = CustomUserForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            user = authenticate(username =formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
+            login(request, user)
+            messages.success(request, "te has registrado correctamente")
+            return redirect(to='index')
+        data["form"] = formulario
+        
+   
+    return render(request, 'registration/registrar.html', data)
+
+def sobrenosotros(request):
+
+   return render(request, 'core/sobrenosotros.html')

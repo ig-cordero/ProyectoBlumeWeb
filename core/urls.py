@@ -44,4 +44,8 @@ urlpatterns = [
         path('eliminarm/<id>/', eliminarm, name="eliminarm"),
         #menumensajes
         path('menumensajes/', menumensajes, name="menumensajes"),
+        #registrar
+        path('Registrar/', registrar, name="Registrar"),
+        #sobrenosotros
+        path('sobrenosotros/', sobrenosotros, name="sobrenosotros"),
 ]

@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block contenido %}
+{% load crispy_forms_tags %}
+
+
+<body>
+    <br>
+    <div class="container p-0">
+        <div class="card px-4" style="border-color: hsl(120, 45%, 38%);">
+            <br>
+            <h1 class="text-center">Sobre nuestra fundacion </h1>
+                <div class="row">
+                    <div class="col-12">
+                            <p class="">
+                                en Blumen, creemos en la belleza atemporal y en la experiencia invaluable que nos brinda la tercera edad. Somos una empresa única en su tipo, formada por un grupo de personas apasionadas por las flores y las plantas, que han decidido combinar su amor por la naturaleza con su experiencia de vida para ofrecer productos excepcionales.
+                                
+                                Nuestra historia se remonta a un grupo de amigos y amigas, todos ellos en la etapa de la tercera edad, que compartían un interés común: la jardinería. Cada uno de nosotros ha dedicado una vida entera al cuidado y cultivo de flores y plantas, desarrollando habilidades y conocimientos que nos han convertido en verdaderos expertos.
+                                
+                                Decidimos unir nuestras fuerzas y crear Blumen con el objetivo de transmitir nuestra pasión y conocimientos a los demás, al tiempo que generamos una actividad enriquecedora para nuestras propias vidas. Nuestro lema es simple pero poderoso: "Cultivando belleza, compartiendo experiencias".</p>
+                    </div>
+                    <br>
+
+                    <div class="col-6">
+                        <img src="{%  static '/core/img/goce-de-abuelo-en-el-jardín-con-las-flores-rosas-feliz-que-trabaja-jardinero-mayor-flor-tierra-la-149729462.webp' %}" style="width: 500px;">
+                    </div>
+                    <br>
+                    <div class="col-6">
+                            <p >En Blumen, nos enorgullece ofrecer una amplia variedad de flores y plantas cuidadosamente seleccionadas. Trabajamos con proveedores locales y cultivamos muchas de nuestras propias plantas, lo que nos permite garantizar su frescura y calidad. Nuestro catálogo incluye desde coloridos ramos de flores hasta exuberantes plantas de interior y hermosos arreglos florales para todo tipo de ocasiones.
+
+                                Lo que nos distingue de otras empresas es nuestra atención al detalle y el toque especial que cada uno de nosotros aporta a nuestro trabajo. Cada flor y planta que vendemos es tratada con amor y cuidado, y nuestros clientes pueden sentir esa dedicación en cada uno de nuestros productos.</p>
+                    </div>
+                    <br>
+                    <div class="col-6">
+                            <p class="text mb-1"> si usted se subscribe a esta fundacion recibira un descuento del 5% en todos los sus productos que usted compre en esta pagina 
+                                </p>
+                    </div>
+                    <br>
+                    <div class="col-6">
+                        <img src="{%  static '/core/img/goce-de-abuelo-en-el-jardín-con-las-flores-rosas-feliz-que-trabaja-jardinero-mayor-flor-tierra-la-149729462.webp' %}" style="width: 450px;">
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{% url 'subscripcion' %}" class=" btn btn-success px-4">Donar</a>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock contenido %}
