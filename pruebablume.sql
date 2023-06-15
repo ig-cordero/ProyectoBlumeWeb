@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-06-2023 a las 01:57:29
+-- Tiempo de generación: 15-06-2023 a las 06:19:34
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -197,7 +197,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (57, 'Can add orden producto', 15, 'add_ordenproducto'),
 (58, 'Can change orden producto', 15, 'change_ordenproducto'),
 (59, 'Can delete orden producto', 15, 'delete_ordenproducto'),
-(60, 'Can view orden producto', 15, 'view_ordenproducto');
+(60, 'Can view orden producto', 15, 'view_ordenproducto'),
+(61, 'Can add estado suscripcion', 16, 'add_estadosuscripcion'),
+(62, 'Can change estado suscripcion', 16, 'change_estadosuscripcion'),
+(63, 'Can delete estado suscripcion', 16, 'delete_estadosuscripcion'),
+(64, 'Can view estado suscripcion', 16, 'view_estadosuscripcion'),
+(65, 'Can add suscripcion', 17, 'add_suscripcion'),
+(66, 'Can change suscripcion', 17, 'change_suscripcion'),
+(67, 'Can delete suscripcion', 17, 'delete_suscripcion'),
+(68, 'Can view suscripcion', 17, 'view_suscripcion');
 
 -- --------------------------------------------------------
 
@@ -224,7 +232,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-10 02:37:18.000998', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
+(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-15 04:01:18.659501', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314');
 
 -- --------------------------------------------------------
 
@@ -279,10 +287,10 @@ CREATE TABLE `core_estadoorden` (
 --
 
 INSERT INTO `core_estadoorden` (`id`, `estado_orden`) VALUES
-(1, 'En Proceso'),
-(2, 'Completada'),
-(3, 'Cancelada'),
-(4, 'Lista para despacho'),
+(1, 'validación'),
+(2, 'preparación'),
+(3, 'reparto'),
+(4, 'entregado'),
 (5, 'En camino'),
 (6, 'En tienda, lista para entrega');
 
@@ -371,7 +379,7 @@ CREATE TABLE `core_producto` (
 --
 
 INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca_id`, `descripcion`, `precio`, `stock`, `tipo_id`, `creado_en`, `modificado_en`) VALUES
-(1, 'productos/vaquita.gif', 'Vaquita de Prueba MySQL', 1, 'Esto es una prueba', 111, 4, 1, '2023-06-06', '2023-06-16'),
+(1, 'productos/vaquita.gif', 'Vaquita de Prueba MySQL', 1, 'Esto es una prueba', 111, 0, 1, '2023-06-06', '2023-06-16'),
 (2, 'productos/arb-nube.jpg', 'Arbusto Nube', 1, 'Arbusto Nube', 2222, 11, 1, '2023-06-06', NULL),
 (3, 'productos/arkein.webp', 'Arbusto Arbusto', 1, 'Arbusto Arbusto', 2222, 10, 1, '2023-06-06', NULL),
 (4, 'productos/cultivador-jardin.webp', 'Cultivador', 1, 'Cultivador', 5900, 10, 5, '2023-06-06', NULL),
@@ -382,6 +390,19 @@ INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca_id`, `descripcion`
 (9, 'productos/tijeras-poda.webp', 'Tijera poda', 1, 'Tijera poda', 6990, 10, 5, '2023-06-06', NULL),
 (10, 'productos/th3.jpg', 'Sustrato rejuvenedor', 1, 'Sustrato rejuvenedor', 15990, 10, 3, '2023-06-06', NULL),
 (11, 'productos/th3_UZrHTlh.jpg', 'Tierra de Hojas', 1, 'Tierra de Hojas organico', 15990, 10, 3, '2023-06-06', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `core_suscripcion`
+--
+
+CREATE TABLE `core_suscripcion` (
+  `id` bigint(20) NOT NULL,
+  `suscrito_el` date NOT NULL,
+  `renovacion_el` date DEFAULT NULL,
+  `id_usuario_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -467,11 +488,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (6, 'contenttypes', 'contenttype'),
 (11, 'core', 'carrito'),
 (14, 'core', 'estadoorden'),
+(16, 'core', 'estadosuscripcion'),
 (13, 'core', 'marca'),
 (10, 'core', 'mensaje'),
 (12, 'core', 'orden'),
 (15, 'core', 'ordenproducto'),
 (9, 'core', 'producto'),
+(17, 'core', 'suscripcion'),
 (8, 'core', 'tipoproducto'),
 (7, 'sessions', 'session');
 
@@ -553,7 +576,9 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (58, 'sessions', '0001_initial', '2023-06-06 13:15:59.948216'),
 (59, 'core', '0011_marca_alter_producto_marca', '2023-06-08 14:23:46.488372'),
 (60, 'core', '0012_delete_orden', '2023-06-11 23:01:33.090392'),
-(61, 'core', '0013_estadoorden_orden_ordenproducto', '2023-06-12 00:54:18.261482');
+(61, 'core', '0013_estadoorden_orden_ordenproducto', '2023-06-12 00:54:18.261482'),
+(62, 'core', '0014_estadosuscripcion_suscripcion', '2023-06-14 17:58:04.857355'),
+(63, 'core', '0015_delete_estadosuscripcion_remove_suscripcion_estado', '2023-06-15 03:15:24.679194');
 
 -- --------------------------------------------------------
 
@@ -574,7 +599,7 @@ CREATE TABLE `django_session` (
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('0k32irqcoezdxq1o46azl15ovkfrngpg', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7GHu:coJkVf7MsCvkQDTr-HqO2N37mG74OZJ9ZS9_YjFrC6c', '2023-06-22 14:06:54.515182'),
 ('1r73ur2f94g7luz9jifiwmyj50y8byjh', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q6WfR:DJK4kjcfg2YpBxeQosyBdioJT4XNAnfBY327CdHMwiY', '2023-06-20 13:24:09.615610'),
-('6txynpdkh0wh1tuaz5ue8iroh0a2aiyx', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7oTe:xcpL4VG_ZL59GzT9RS7alA_OmzEQTywxS1Pa8aA60Fg', '2023-06-24 02:37:18.004178');
+('3fwospi7j19tsrh7qkgppvystp28mjoo', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q9eAg:77zFqfZBWYzmnmKu9fMpKqTIKXFMPHXrXf5KPWCxZEo', '2023-06-29 04:01:18.663265');
 
 --
 -- Índices para tablas volcadas
@@ -683,6 +708,13 @@ ALTER TABLE `core_producto`
   ADD KEY `core_producto_marca_id_b2651e7a` (`marca_id`);
 
 --
+-- Indices de la tabla `core_suscripcion`
+--
+ALTER TABLE `core_suscripcion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `core_suscripcion_id_usuario_id_6d081176_fk_auth_user_id` (`id_usuario_id`);
+
+--
 -- Indices de la tabla `core_tipoproducto`
 --
 ALTER TABLE `core_tipoproducto`
@@ -742,7 +774,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT de la tabla `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT de la tabla `auth_user`
@@ -805,6 +837,12 @@ ALTER TABLE `core_producto`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT de la tabla `core_suscripcion`
+--
+ALTER TABLE `core_suscripcion`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `core_tipoproducto`
 --
 ALTER TABLE `core_tipoproducto`
@@ -820,13 +858,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- Restricciones para tablas volcadas
@@ -885,6 +923,12 @@ ALTER TABLE `core_ordenproducto`
 --
 ALTER TABLE `core_producto`
   ADD CONSTRAINT `core_producto_tipo_id_e0e92ad1_fk_core_tipoproducto_id` FOREIGN KEY (`tipo_id`) REFERENCES `core_tipoproducto` (`id`);
+
+--
+-- Filtros para la tabla `core_suscripcion`
+--
+ALTER TABLE `core_suscripcion`
+  ADD CONSTRAINT `core_suscripcion_id_usuario_id_6d081176_fk_auth_user_id` FOREIGN KEY (`id_usuario_id`) REFERENCES `auth_user` (`id`);
 
 --
 -- Filtros para la tabla `django_admin_log`

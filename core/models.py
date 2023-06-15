@@ -56,6 +56,8 @@ class Carrito(models.Model):
 
 class EstadoOrden(models.Model):
     estado_orden = models.CharField(max_length=50)
+    def __str__(self):
+        return str(self.estado_orden)
 
 class Orden(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -77,3 +79,18 @@ class OrdenProducto(models.Model):
     def __str__(self):
         return str(self.orden)
 
+class Suscripcion(models.Model):
+    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    suscrito_el = models.DateField()
+    renovacion_el = models.DateField(blank=True, null=True)
+    
+    def __str__(self):
+        return str(self.estado)
+    
+    @property
+    def estado_sub(self):
+        resta = self.renovacion_el - self.suscrito_el
+        if resta > 0 :
+            return 'suscrito'
+        else:
+            return 'no suscrito'

@@ -89,9 +89,11 @@
                                                      
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'carrito' %}"><i class="fa-solid fa-cart-shopping"></i></a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'carrito' %}"><i class="fa-solid fa-cart-shopping"></i></a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

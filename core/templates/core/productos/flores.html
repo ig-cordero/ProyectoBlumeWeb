@@ -42,7 +42,13 @@
                             </div>
                             <div class="card-footer mx-auto" style="border: none; text-align: center;">
                                 
-                                <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-lg"></i></a>
+                                {% if user.is_authenticated %}
+                                    {% if aux.stock == 0 %}
+                                        <p>No disponible</p>
+                                    {% else %}
+                                    <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-lg"></i></a>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>

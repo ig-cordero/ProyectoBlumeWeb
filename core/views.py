@@ -131,9 +131,8 @@ def herramientas(request):
 def subscripcion(request):
     return render(request, 'core/subscripcion.html')
 
-def carrito(request):
-    return render(request, 'core/carrito.html')
 
+@login_required
 def perfil(request):
     return render(request, 'core/perfil.html')
 
@@ -302,6 +301,7 @@ def eliminarm(request, id):
 
 #carro
 
+@login_required
 def carrito(request):
     respuesta2 = requests.get('https://mindicador.cl/api/dolar')
     monedas = respuesta2.json()
@@ -380,3 +380,5 @@ def car_eliminar_todo(request):
     return redirect(to="carrito")
 
 #orden
+def checkout(request):
+    return render(request, 'core/checkout.html')

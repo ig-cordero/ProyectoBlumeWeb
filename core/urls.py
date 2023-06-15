@@ -45,4 +45,6 @@ urlpatterns = [
         path('eliminarm/<id>/', eliminarm, name="eliminarm"),
         #menumensajes
         path('menumensajes/', menumensajes, name="menumensajes"),
+        #pedido
+        path('checkout/', checkout, name="checkout")
 ]
