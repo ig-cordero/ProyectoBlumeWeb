@@ -71,6 +71,7 @@ class Orden(models.Model):
     estado_orden = models.ForeignKey(EstadoOrden, on_delete=models.CASCADE)
     creado_en = models.DateField()
     modificado_en = models.DateField(blank=True, null=True)
+    descuento_sub = models.IntegerField(default=0)
     def __str__(self):
         return str(self.id_usuario)
 
@@ -84,6 +85,11 @@ class OrdenProducto(models.Model):
 
     def __str__(self):
         return str(self.orden)
+    
+    @property
+    def subtotal_producto(self):
+        precio = self.producto.precio * self.cantidad_prod
+        return precio
 
 class Suscripcion(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -134,7 +134,15 @@ def subscripcion(request):
 
 @login_required
 def perfil(request):
-    return render(request, 'core/perfil.html')
+    if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
+        sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
+        esta_suscrito = sub.estado_sub
+    else:
+        esta_suscrito = False
+    data = {
+        'sub': esta_suscrito,
+    }
+    return render(request, 'core/perfil.html', data)
 
 
 
@@ -327,12 +335,12 @@ def car_agregar(request, id):
         if carrito.producto_carrito.stock == 0:
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         
-        producto_restar_stock(id)
+        producto_restar_stock(id, 1)
         carrito.cantidad_prod = carrito.cantidad_prod + 1
         carrito.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
-    producto_restar_stock(id)
+    producto_restar_stock(id, 1)
     nuevo_item_carrito = Carrito()
     nuevo_item_carrito.id_usuario = User.objects.get(id = request.user.id)
     nuevo_item_carrito.producto_carrito = Producto.objects.get(id = id)
@@ -353,9 +361,9 @@ def car_una_cantidad_menos(request, id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-def producto_restar_stock(id):
+def producto_restar_stock(id, arestar):
     producto = Producto.objects.filter(id = id).first()
-    producto.stock = producto.stock - 1
+    producto.stock = producto.stock - arestar
     producto.save()
 
 def producto_sumar_stock(id, cantidad):
@@ -431,12 +439,17 @@ def nuevo_pedido(request):
     
     if esta_suscrito:
         total = total * 0.95
+        orden.descuento_sub = 1
+    else:
+        orden.descuento_sub = 0
 
     orden.precio_orden = total
 
     orden.save()
     detalle_orden.save()
     #Lets goooooooooo
+    #Despues de creada la orden, se borra el carrito de compras
+    productos_carrito.delete()
     return redirect(to="pedidos")
 
 @login_required
@@ -446,7 +459,7 @@ def pedidos(request):
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
     try:
-        paginator = Paginator(ordenes, 7)
+        paginator = Paginator(ordenes, 5)
         ordenes = paginator.page(page)
     except:
         raise Http404
@@ -457,3 +470,16 @@ def pedidos(request):
     }
 
     return render(request, 'core/pedidos.html', data)
+
+@login_required
+def detalle_pedido(request, id):
+    
+    orden = Orden.objects.get(id = id)
+    detalle_orden = OrdenProducto.objects.filter(orden = id).all()
+    sin_descuento = round(orden.precio_orden / 0.95)
+    data = {
+        'orden': orden,
+        'detalle': detalle_orden,
+        'sin_descuento': sin_descuento
+    }
+    return render(request, 'core/detalle_pedido.html', data)

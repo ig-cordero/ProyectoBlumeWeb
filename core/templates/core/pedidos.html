@@ -20,6 +20,7 @@
                         </h2>
                         <div id="collapseThree{{ aux.id}}" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                           <div class="accordion-body">
+                            <a href="{% url 'detalle_pedido' aux.id %}" class="btn btn-info mb-3 me-4" style="float: right;"><i class="fa-solid fa-circle-info"></i> detalle pedido</a>
                             <p>Pedido el: {{aux.creado_en}} | Precio: ${{aux.precio_orden}}</p>
                             <p>Estado de la orden: {{aux.estado_orden.estado_orden}}</p>
                             {% if aux.estado_orden.id == 1 %}
@@ -39,12 +40,12 @@
                                 <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">entregado</div>
                              </div>
                             {% endif %}
-                            
                           </div>
                         </div>
                       </div>
                     {% endfor %}
-                    
+                    <br>
+                    {% include 'core/paginator.html' %}
                   </div>
 
             </div>
@@ -52,38 +53,8 @@
     </div>
     <br>
     <div class="col-lg-10 mx-auto">
-        <div class="card-body">
-            <table class="table table-responsive-sm">
-                <thead>
-                  <tr>
-                    <th style="text-align: center;" scope="col">Nombre del producto:</th>
-                    <th style="text-align: center;" scope="col">Imagen:</th>
-                    <th style="text-align: center;" scope="col">Precio:</th>
-                    <th style="text-align: center;" scope="col">Fecha de compra:</th>
-                    <th style="text-align: center;" scope="col">Fecha de entrega:</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {% for aux in listaPedidos %}
-                    <tr>
-                        <td> - {{ aux.nombre }}</td>
-                        <td style="text-align: center;">
-                            {% if aux.imagen %}
-                                <img src="{{ aux.imagen.url }}" alt="Card image" style="height: 100px; text-align: center;"></td>
-                            {% else %}
-                                <img src="{% static 'core/img/logo.jpg' %}" alt="Sin imagen" style="height: 100px;">
-                                <h6>No imagen</h6>
-                            {% endif %}
-                        <td style="text-align: center;">{{ aux.precio | intcomma }}</td>
-                        <td style="text-align: center;">fecha</td>
-                        <td style="text-align: center;">fecha</td>
-                    </tr>
-                        {% endfor %}
-                </tbody>
-              </table>
-        </div>
         <div class="d-flex justify-content-center mb-2">
-            <a type="button" class="btn btn-success ms-1" href="{% url 'perfil' %}">Volver al perfil</a>
+            
         </div>
     </div>
 </body>
