@@ -38,6 +38,10 @@ admin.site.register(Marca, MarcaAdmin )
 admin.site.register(Mensaje, MensajeAdmin)
 admin.site.register(Producto, ProductoAdmin )
 admin.site.register(Carrito, CarritoAdmin)
+admin.site.register(Suscripcion)
+admin.site.register(EstadoOrden)
+admin.site.register(Orden)
+admin.site.register(OrdenProducto)
 
 
 

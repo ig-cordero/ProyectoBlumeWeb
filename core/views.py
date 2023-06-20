@@ -136,24 +136,7 @@ def subscripcion(request):
 def perfil(request):
     return render(request, 'core/perfil.html')
 
-@login_required
-def pedidos(request):
 
-    productos = Producto.objects.all()
-    page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
-    
-    try:
-        paginator = Paginator(productos, 7)
-        productos = paginator.page(page)
-    except:
-        raise Http404
-
-    data = {
-        'listaProductos': productos,
-        'paginator': paginator
-    }
-
-    return render(request, 'core/pedidos.html', data)
 
 #Admin CRUD
 @login_required
@@ -307,17 +290,31 @@ def carrito(request):
     monedas = respuesta2.json()
     productos = Carrito.objects.filter(id_usuario = request.user.id).all()
 
+    if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
+        sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
+        esta_suscrito = sub.estado_sub
+    else:
+        esta_suscrito = False
+    
     precio_clp = 0
     for producto in productos:
         precio_clp = precio_clp + producto.subtotal_producto
+    
+    descuento = round(precio_clp * 0.95)
 
     valor_usd = monedas['serie'][0]['valor']
-    precio_usd = precio_clp/valor_usd
+    if esta_suscrito == True:
+        precio_usd = descuento/valor_usd
+    else:
+        precio_usd = precio_clp/valor_usd
+    
 
     data = {
         'listaProductos': productos,
         'valor' : round(precio_usd, 2),
         'precio_clp': precio_clp,
+        'descuento' : descuento,
+        'is_sub' : esta_suscrito
     }
     
     return render(request, 'core/carrito.html', data)
@@ -380,5 +377,83 @@ def car_eliminar_todo(request):
     return redirect(to="carrito")
 
 #orden
+@login_required
 def checkout(request):
-    return render(request, 'core/checkout.html')
+    respuesta2 = requests.get('https://mindicador.cl/api/dolar')
+    monedas = respuesta2.json()
+    productos = Carrito.objects.filter(id_usuario = request.user.id).all()
+
+    if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
+        sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
+        esta_suscrito = sub.estado_sub
+    else:
+        esta_suscrito = False
+    
+    precio_clp = 0
+    for producto in productos:
+        precio_clp = precio_clp + producto.subtotal_producto
+    
+    descuento = round(precio_clp * 0.95)
+
+    valor_usd = monedas['serie'][0]['valor']
+    if esta_suscrito == True:
+        precio_usd = descuento/valor_usd
+    else:
+        precio_usd = precio_clp/valor_usd
+
+    data = {
+        'listaProductos': productos,
+        'valor' : round(precio_usd, 2),
+        'precio_clp': precio_clp,
+        'descuento' : descuento,
+        'is_sub' : esta_suscrito
+    }
+    
+    return render(request, 'core/checkout.html', data)
+
+def nuevo_pedido(request):
+    #carrito y todo lo que contiene del usuario
+    productos_carrito = Carrito.objects.filter(id_usuario = request.user.id).all()
+    #nueva orden
+    estado1 = EstadoOrden.objects.filter(id = 1).first()
+    orden = Orden.objects.create(id_usuario = request.user, estado_orden = estado1, creado_en = datetime.now().date())
+    #falta precio
+    total = 0
+    for producto in productos_carrito:
+        detalle_orden = OrdenProducto.objects.create(orden = orden, producto = producto.producto_carrito, cantidad_prod = producto.cantidad_prod)
+        total = total +  producto.subtotal_producto
+    
+    if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
+        sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
+        esta_suscrito = sub.estado_sub
+    else:
+        esta_suscrito = False
+    
+    if esta_suscrito:
+        total = total * 0.95
+
+    orden.precio_orden = total
+
+    orden.save()
+    detalle_orden.save()
+    #Lets goooooooooo
+    return redirect(to="pedidos")
+
+@login_required
+def pedidos(request):
+
+    ordenes = Orden.objects.filter(id_usuario = request.user.id).all()
+    page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+    
+    try:
+        paginator = Paginator(ordenes, 7)
+        ordenes = paginator.page(page)
+    except:
+        raise Http404
+
+    data = {
+        'listaPedidos': ordenes,
+        'paginator': paginator
+    }
+
+    return render(request, 'core/pedidos.html', data)

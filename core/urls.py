@@ -37,8 +37,6 @@ urlpatterns = [
         path('car_eliminartodo/', car_eliminar_todo, name="carrito_borra_todo"),
         #Perfil
         path('perfil/', perfil, name="perfil"),
-        #Pedidos
-        path('pedidos/', pedidos, name="pedidos"),
         # CRUD Mensajes
         path('agregarm/', agregarm, name="agregarm"),
         path('modificarm/<id>/', modificarm, name="modificarm"),
@@ -46,5 +44,7 @@ urlpatterns = [
         #menumensajes
         path('menumensajes/', menumensajes, name="menumensajes"),
         #pedido
-        path('checkout/', checkout, name="checkout")
+        path('checkout/', checkout, name="checkout"),
+        path('registro_pedido/', nuevo_pedido, name="registro_pedido"),
+        path('pedidos/', pedidos, name="pedidos"),
 ]

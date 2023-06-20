@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 # Create your models here.
 #Prueba git
 class TipoProducto(models.Model):
@@ -53,6 +54,11 @@ class Carrito(models.Model):
     def subtotal_producto(self):
         precio = self.producto_carrito.precio * self.cantidad_prod
         return precio
+    
+#    @property
+#    def total_descuento(self):
+#        return self.subtotal_producto * 0.95
+
 
 class EstadoOrden(models.Model):
     estado_orden = models.CharField(max_length=50)
@@ -61,7 +67,7 @@ class EstadoOrden(models.Model):
 
 class Orden(models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    precio_orden = models.IntegerField()
+    precio_orden = models.IntegerField(default=0, null=True, blank=True)
     estado_orden = models.ForeignKey(EstadoOrden, on_delete=models.CASCADE)
     creado_en = models.DateField()
     modificado_en = models.DateField(blank=True, null=True)
@@ -85,12 +91,12 @@ class Suscripcion(models.Model):
     renovacion_el = models.DateField(blank=True, null=True)
     
     def __str__(self):
-        return str(self.estado)
+        return str(self.id_usuario)
     
     @property
     def estado_sub(self):
-        resta = self.renovacion_el - self.suscrito_el
-        if resta > 0 :
-            return 'suscrito'
+        #Si la fecha de hoy es mayor que la de renovacion entonces 
+        if datetime.now().date() >= self.renovacion_el :
+            return False
         else:
-            return 'no suscrito'
+            return True

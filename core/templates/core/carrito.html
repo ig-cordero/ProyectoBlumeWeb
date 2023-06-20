@@ -75,12 +75,21 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="card" style="min-height: 350px; text-align: center;">
-                            <div class="card-title ms-4 mt-2"><h4>TOTAL DEL CARRITO</h4></div>
-                            <p>Precio en pesos chilenos: {{ precio_clp | intcomma }}</p>
-                            <p>Precio en dolares: {{ valor }}</p>
-                            <div id="btnPaypal"> </div>
-                            <p><a class="btn btn-warning btn-lg" href="{% url 'checkout' %}" role="button"> <i class="fa-solid fa-cash-register"></i> Proceder al pago</a></p>
+                        <div class="card" style="min-height: 350px;">
+                            <div class="card-title ms-4 mt-2" style="text-align: center;"><h4>TOTAL DEL CARRITO</h4></div> 
+                            <div class="card-body">
+                                {% if is_sub == True %}
+                                    <p><del> Valor a pagar:  ${{ precio_clp | intcomma }} </del></p>
+                                    <p>Valor con descuento aplicado: ${{ descuento | intcomma }}</p>
+                                {% else %}
+                                    <p>Valor a pagar: {{ precio_clp | intcomma }}</p>
+                                {% endif %}
+                            
+                                <p>Precio en dolares: {{ valor }}</p>
+                                
+                                <p><a class="btn btn-warning btn-lg" href="{% url 'checkout' %}" role="button"> <i class="fa-solid fa-cash-register"></i> Proceder al pago</a></p>
+                            </div>                           
+                            
                         </div>
                     </div>
                 </div>         
@@ -99,69 +108,3 @@
 
 
 {% endblock contenido %}
-{% block js %}
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
-<script>
-    paypal.Button.render({
-        env: 'sandbox',
-        client: {
-            sandbox: 'AfUBRUgTJgD4HE9G_a75eLmda41q2vkw6k7oiPess1hvr_KXL3EmnMkTCk7iWFtp6oTM28daEbs_--GM',
-            production: 'demo_production_client_id'
-        },
-        locale: 'es_CL',
-        style: {
-            size: 'large',
-            color: 'gold',
-            shape: 'rect'
-        },
-        commit: true,
-        payment: function (data, actions) {
-            return actions.payment.create({
-                transactions: [{
-                    amount: { 
-                        total: '{{ valor }}', // EL TOTAL DEL CARRITO DE COMPRA
-                        currency: 'USD'
-                    }
-                }]
-            });
-        },
-        onAuthorize: function (data, actions) {
-            return actions.payment.execute().then(function () {
-                // LA LOGICA DE LO QUE PASA LUEGO DEL PAGO	
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: 'Pago realizado correctamente!',
-                    icon: 'success',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirmar'
-                })
-            });
-        },
-        onCancel(data) {
-            Swal.fire({
-                    title: 'Cancelado',
-                    text: 'Transacción cancelada!',
-                    icon: 'error',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirmar'
-                })
-        },
-        onError(err) {
-            Swal.fire({
-                    title: 'Error',
-                    text: 'Ha ocurrido un error con el pago',
-                    icon: 'error',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirmar'
-                })
-        }
-
-    }, '#btnPaypal');
-</script>
-{% endblock js %}
