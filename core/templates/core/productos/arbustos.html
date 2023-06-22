@@ -49,7 +49,8 @@
                                     {% if aux.stock == 0 %}
                                         <p>No disponible</p>
                                     {% else %}
-                                    <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-lg"></i></a>
+                                    <a onclick="mensajeAgregar({{aux.id}})" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-beat fa-lg"></i></a>
+                                    
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -74,4 +75,11 @@
         </div>
     </div>
 
+<script src="{% static '/core/js/msj_agr_carrito.js' %}"></script>
+</body>
 {% endblock contenido %}
+{% block js %}
+    <script>
+        
+    </script>
+{% endblock js %}

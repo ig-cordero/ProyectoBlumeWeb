@@ -424,7 +424,7 @@ def nuevo_pedido(request):
     productos_carrito = Carrito.objects.filter(id_usuario = request.user.id).all()
     #nueva orden
     estado1 = EstadoOrden.objects.filter(id = 1).first()
-    orden = Orden.objects.create(id_usuario = request.user, estado_orden = estado1, creado_en = datetime.now().date())
+    orden = Orden.objects.create(id_usuario = request.user, estado_orden = estado1, creado_en = datetime.now().date(), modificado_en = datetime.now().date())
     #falta precio
     total = 0
     for producto in productos_carrito:
@@ -483,3 +483,47 @@ def detalle_pedido(request, id):
         'sin_descuento': sin_descuento
     }
     return render(request, 'core/detalle_pedido.html', data)
+
+@login_required
+def menupedidos(request):
+    
+    if request.user.username != 'admin':
+        return redirect('index')
+
+    pedidos = Orden.objects.all()
+    page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+    
+    try:
+        paginator = Paginator(pedidos, 7)
+        pedidos = paginator.page(page)
+    except:
+        raise Http404
+
+    data = {
+        'listaPedidos': pedidos,
+        'paginator': paginator,
+        'form': EstadoOdenForm
+    }
+    print(data['listaPedidos'])
+    return render(request, 'core/crud/menupedidos.html', data)
+
+@login_required
+def actualizar_pedido(request, id):
+    if request.user.username != 'admin':
+       return redirect('index')
+
+    pedido = Orden.objects.get(id=id); 
+    data = {
+        'aux': pedido,
+        'form': EstadoOdenForm(instance=pedido) # LA INFO SE ALMACENA EN EL FORMULARIO
+    }
+    if request.method == 'POST':
+        formulario = EstadoOdenForm(data=request.POST, instance=pedido)
+        if formulario.is_valid():
+            pedido.modificado_en = datetime.now().date()
+            pedido.save()
+            formulario.save()
+            messages.success(request, "Orden actualizado correctamente")
+            data['form'] = formulario # CARGAMOS EL FORMULARIO FINAL CON LA INFO MODIFICADA
+
+    return render(request, 'core/crud/actualizar_pedido.html', data)

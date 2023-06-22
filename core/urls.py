@@ -48,4 +48,6 @@ urlpatterns = [
         path('registro_pedido/', nuevo_pedido, name="registro_pedido"),
         path('pedidos/', pedidos, name="pedidos"),
         path('detalle_pedido/<id>/', detalle_pedido, name="detalle_pedido"),
+        path('menupedidos/', menupedidos, name="menupedidos"),
+        path('actualizar_pedido/<id>', actualizar_pedido, name="actualizar_pedido"),
 ]

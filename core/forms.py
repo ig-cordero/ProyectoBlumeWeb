@@ -31,3 +31,9 @@ class MensajeForm(ModelForm):
             'creado_en' : forms.SelectDateWidget(years=range(2020,2030)),
             'modificado_en' : forms.SelectDateWidget(years=range(2020,2030))
         }
+
+class EstadoOdenForm(ModelForm):
+    
+    class Meta:
+        model = Orden
+        fields = ['estado_orden']
