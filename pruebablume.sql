@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-06-2023 a las 16:30:52
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.2.0
+-- Tiempo de generación: 22-06-2023 a las 07:36:40
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -232,8 +232,8 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-20 12:27:01.273805', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314'),
-(2, 'pbkdf2_sha256$600000$sigYYWnP0WSAYCNZbR2rXh$1xnrGy044KdZBB2FYVEIn7M0DxHcPkVVWp63JVr5D1k=', '2023-06-17 01:43:35.120495', 0, 'ArmorStand', '', '', '', 0, 1, '2023-06-15 14:10:18.352148');
+(1, 'pbkdf2_sha256$600000$WEkHA2yj6N3AhEVgD26Z7P$ocqHgnJCt4m3mS7YmBbYPt6jGeIm3MjR6WfDOB7R+s0=', '2023-06-22 05:31:30.549836', 1, 'admin', '', '', 'ig.cordero@duocuc.cl', 1, 1, '2023-06-06 13:22:15.824314'),
+(2, 'pbkdf2_sha256$600000$sigYYWnP0WSAYCNZbR2rXh$1xnrGy044KdZBB2FYVEIn7M0DxHcPkVVWp63JVr5D1k=', '2023-06-22 05:27:41.424392', 0, 'ArmorStand', '', '', '', 0, 1, '2023-06-15 14:10:18.352148');
 
 -- --------------------------------------------------------
 
@@ -271,14 +271,6 @@ CREATE TABLE `core_carrito` (
   `id_usuario_id` int(11) NOT NULL,
   `producto_carrito_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
---
--- Volcado de datos para la tabla `core_carrito`
---
-
-INSERT INTO `core_carrito` (`id`, `cantidad_prod`, `id_usuario_id`, `producto_carrito_id`) VALUES
-(21, 1, 2, 2),
-(22, 1, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -355,8 +347,9 @@ CREATE TABLE `core_orden` (
 --
 
 INSERT INTO `core_orden` (`id`, `precio_orden`, `creado_en`, `modificado_en`, `estado_orden_id`, `id_usuario_id`, `descuento_sub`) VALUES
-(14, 2333, '2023-06-20', NULL, 1, 1, 0),
-(15, 2222, '2023-06-20', NULL, 1, 1, 0);
+(14, 2333, '2023-06-20', '2023-06-22', 2, 1, 0),
+(15, 2222, '2023-06-20', '2023-06-21', 1, 1, 0),
+(16, 4202, '2023-06-20', '2023-06-21', 3, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -378,7 +371,9 @@ CREATE TABLE `core_ordenproducto` (
 INSERT INTO `core_ordenproducto` (`id`, `cantidad_prod`, `orden_id`, `producto_id`) VALUES
 (18, 1, 14, 1),
 (19, 1, 14, 2),
-(20, 1, 15, 2);
+(20, 1, 15, 2),
+(21, 1, 16, 2),
+(22, 2, 16, 6);
 
 -- --------------------------------------------------------
 
@@ -409,7 +404,7 @@ INSERT INTO `core_producto` (`id`, `imagen`, `nombre`, `marca_id`, `descripcion`
 (3, 'productos/arkein.webp', 'Arbusto Arbusto', 1, 'Arbusto Arbusto', 2222, 7, 1, '2023-06-06', NULL),
 (4, 'productos/cultivador-jardin.webp', 'Cultivador', 1, 'Cultivador', 5900, 10, 5, '2023-06-06', NULL),
 (5, 'productos/flor.jpg', 'Flor Loto', 1, 'Flor Loto', 6666, 10, 2, '2023-06-06', NULL),
-(6, 'productos/Flor4.webp', 'Girasoles', 1, 'Girasoles', 990, 16, 2, '2023-06-06', NULL),
+(6, 'productos/Flor4.webp', 'Girasoles', 1, 'Girasoles', 990, 15, 2, '2023-06-06', NULL),
 (7, 'productos/mac5.jpg', 'Macetero bob patiño', 1, 'Macetero bob patiño', 9990, 10, 4, '2023-06-06', NULL),
 (8, 'productos/mac6.jpg', 'Cilindro Cyan', 1, 'Macetero Cilindro Cyan', 9900, 10, 4, '2023-06-06', NULL),
 (9, 'productos/tijeras-poda.webp', 'Tijera poda', 1, 'Tijera poda', 6990, 10, 5, '2023-06-06', NULL),
@@ -642,7 +637,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('0k32irqcoezdxq1o46azl15ovkfrngpg', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q7GHu:coJkVf7MsCvkQDTr-HqO2N37mG74OZJ9ZS9_YjFrC6c', '2023-06-22 14:06:54.515182'),
 ('1r73ur2f94g7luz9jifiwmyj50y8byjh', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1q6WfR:DJK4kjcfg2YpBxeQosyBdioJT4XNAnfBY327CdHMwiY', '2023-06-20 13:24:09.615610'),
 ('erjefyzl3kkl24r5g2pykysnciw46t70', '.eJxVjDEOwyAQBP9CHSE4HyBSps8bLHx3BCcRloxdWfl7bMlFUmyzM7ub6tO6lH5tMvcjq6sCdfnthkQvqQfgZ6qPSdNUl3kc9KHokzZ9n1jet9P9OyiplX1NgtE4BuDkrQXrDHURuxzJhT3GSwYIiJ4poBkQXTSRIAsZtCygPl_A3jcK:1q9ngS:JgywD4vOD6NAgniYl3PFYim_t45nWDHJz8HjkKciGYY', '2023-06-29 14:10:44.308749'),
-('gubu6ndy5nz5ihtvxparb73pce3wgc4h', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1qAL0m:7l8KRC8qHCocodDqgWqDnV8COEtFK89t4MIh2fzAMcY', '2023-07-01 01:45:56.885030'),
+('nindr184fe7uyj1dti534h2yuqkle7vc', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1qCCuo:3DIBrWMj2RYLlpL956HHo5mtDumH9ydpla_xh6k3vfA', '2023-07-06 05:31:30.553892'),
 ('y8zzgqrbhd3ty8lr79g1la2vurgwp5vi', '.eJxVjMsOwiAQRf-FtSE8ylBcuvcbyAwMUjU0Ke3K-O_apAvd3nPOfYmI21rj1nmJUxZnocXpdyNMD247yHdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3HjmlQiEPiooxyjvWYFwZOXAw1gabMnhEYEvKGADnAYesoajgkJQS7w_tCzeh:1qBaRp:IZl4rsXIvkk7yWdHh49lFwOtv7hUDurybI9XAA8qgQQ', '2023-07-04 12:27:01.276806');
 
 --
@@ -842,7 +837,7 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT de la tabla `core_carrito`
 --
 ALTER TABLE `core_carrito`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `core_estadoorden`
@@ -866,13 +861,13 @@ ALTER TABLE `core_mensaje`
 -- AUTO_INCREMENT de la tabla `core_orden`
 --
 ALTER TABLE `core_orden`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `core_ordenproducto`
 --
 ALTER TABLE `core_ordenproducto`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `core_producto`
