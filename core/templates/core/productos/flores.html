@@ -39,10 +39,17 @@
                                 <h5 class="card-title">{{ aux.marca | capfirst }}</h4>
                                     <p class="card-text">{{ aux.nombre | title }}</p>
                                     <h5 class="card-title">${{ aux.precio | intcomma }}</h4>
+                                    <p class="text-muted">Stock: {{ aux.stock }}</p>
                             </div>
                             <div class="card-footer mx-auto" style="border: none; text-align: center;">
                                 
-                                <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-lg"></i></a>
+                                {% if user.is_authenticated %}
+                                    {% if aux.stock == 0 %}
+                                        <p>No disponible</p>
+                                    {% else %}
+                                    <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-beat fa-lg"></i></a>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -66,7 +73,20 @@
         </div>
     </div>
 
-    
+    <script src="{% static '/core/js/msj_agr_carrito.js' %}"></script>
+    {% if messages %}
+        {% for message in messages %}
+          <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 1200
+          }) </script> 
+        {% endfor %}
+    {% endif %}
 </body>
 
 {% endblock contenido %}
