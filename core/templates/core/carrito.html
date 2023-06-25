@@ -2,7 +2,7 @@
 {% load static %}
 {% load humanize %}
 {% block contenido %}
-
+<body>
 <div class="container-fluid">
     <div class="row">
         <div class="col-2"></div>
@@ -105,6 +105,13 @@
         <div class="col-2 d-none d-lg-block "></div>
     </div>
 </div>
+<!-- Para quitar los mensajes de agregar-->
+{% if messages %}
+        {% for message in messages %}
+        {% endfor %}
+    {% endif %}
+
+        </body>
 
 
 {% endblock contenido %}

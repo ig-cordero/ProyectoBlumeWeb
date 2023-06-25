@@ -21,6 +21,7 @@
                         <div id="collapseThree{{ aux.id}}" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                           <div class="accordion-body">
                             <a href="{% url 'detalle_pedido' aux.id %}" class="btn btn-info mb-3 me-4" style="float: right;"><i class="fa-solid fa-circle-info"></i> detalle pedido</a>
+                            <p> Direccion de envio: {{aux.direccion_envio }} </p>
                             <p>Pedido el: {{aux.creado_en}} | Precio: ${{aux.precio_orden}}</p>
                             <p>Estado de la orden: {{aux.estado_orden.estado_orden}}</p>
                             {% if aux.estado_orden.id == 1 %}

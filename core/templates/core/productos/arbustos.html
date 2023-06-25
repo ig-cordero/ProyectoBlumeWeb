@@ -11,7 +11,7 @@
             <div class="col-2 d-none d-lg-block"></div>
             <div class="col-8 container" style="text-align: center;">
                 <h1>Arbustos</h1>
-
+                
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                       <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
@@ -49,7 +49,7 @@
                                     {% if aux.stock == 0 %}
                                         <p>No disponible</p>
                                     {% else %}
-                                    <a onclick="mensajeAgregar({{aux.id}})" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-beat fa-lg"></i></a>
+                                    <a href="{% url 'carrito_agregar' aux.id %}" class="link-secondary"><i class="fa-solid fa-cart-shopping fa-beat fa-lg"></i></a>
                                     
                                     {% endif %}
                                 {% endif %}
@@ -74,12 +74,25 @@
             <div class="col-2 d-none d-lg-block "></div>
         </div>
     </div>
-
-<script src="{% static '/core/js/msj_agr_carrito.js' %}"></script>
+    {% if messages %}
+        {% for message in messages %}
+          <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 1200
+          }) </script> 
+        {% endfor %}
+    {% endif %}
 </body>
+
+
+
 {% endblock contenido %}
+
 {% block js %}
-    <script>
-        
-    </script>
+
 {% endblock js %}

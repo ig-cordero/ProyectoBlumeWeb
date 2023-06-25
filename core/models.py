@@ -1,8 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from datetime import datetime
 # Create your models here.
-#Prueba git
+
+class Usuario(AbstractUser):
+    direccion = models.CharField(max_length=100, null=True, blank=True)
+    
+    def __str__(self):
+        return self.first_name
+    
 class TipoProducto(models.Model):
     nombreTipoProducto = models.CharField(max_length=50)
 
@@ -44,7 +50,7 @@ class Mensaje(models.Model):
 
 class Carrito(models.Model):
     
-    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     producto_carrito = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad_prod = models.IntegerField(default=1)
     def __str__(self):
@@ -66,12 +72,13 @@ class EstadoOrden(models.Model):
         return str(self.estado_orden)
 
 class Orden(models.Model):
-    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     precio_orden = models.IntegerField(default=0, null=True, blank=True)
     estado_orden = models.ForeignKey(EstadoOrden, on_delete=models.CASCADE)
     creado_en = models.DateField()
     modificado_en = models.DateField(blank=True, null=True)
     descuento_sub = models.IntegerField(default=0)
+    direccion_envio = models.CharField(max_length=100)
     def __str__(self):
         return str(self.id_usuario)
 
@@ -92,7 +99,7 @@ class OrdenProducto(models.Model):
         return precio
 
 class Suscripcion(models.Model):
-    id_usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     suscrito_el = models.DateField()
     renovacion_el = models.DateField(blank=True, null=True)
     

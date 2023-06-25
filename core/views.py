@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import *
 from django.contrib import messages
 from rest_framework import viewsets
 from .serializers import *
 import requests
+from django.contrib.auth.models import Group
 # Create your views here.
 
 #Creando una clase que va a permitir la transformacion
@@ -19,6 +20,27 @@ class TipoProductoViewset(viewsets.ModelViewSet):
     queryset = TipoProducto.objects.all()
     serializer_class = TipoProductoSerializers
 
+class MarcaViewset(viewsets.ModelViewSet):
+    queryset = Marca.objects.all()
+    serializer_class = MarcaSerializers
+
+class MensajeViewset(viewsets.ModelViewSet):
+    queryset = Mensaje.objects.all()
+    serializer_class = MensajeSerializers
+
+
+#Permisos
+# FUNCION GENERICA QUE VALIDA EL GRUPO
+def grupo_requerido(nombre_grupo):
+    def decorator(view_func):
+        @user_passes_test(lambda user: user.groups.filter(name=nombre_grupo).exists())
+        def wrapper(request, *args, **kwargs):
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    
+    return decorator
+#@grupo_requerido('cliente')
+
 def index(request):
     mensajes = Mensaje.objects.all()
     #Productos = Producto.objects.all()
@@ -29,23 +51,33 @@ def index(request):
 
     return render(request, 'core/index.html', data)
 
-def arbustosapi(request):
+def registro(request):
+    data = {
+        'form': CreacionUsuarioForm()
+    }
+    if request.method == 'POST':
+        formulario = CreacionUsuarioForm(data=request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            grupo_cliente = Group.objects.get(name='cliente')
+            usuario = Usuario.objects.get(username=formulario.cleaned_data['username'])
+            grupo_cliente.user_set.add(usuario)
+            return redirect(to="index")
+        data['form'] = formulario
+    return render(request, 'registration/registro.html', data)
+
+def todosAPI(request):
     respuesta = requests.get('http://127.0.0.1:8000/api/productos')
     respuesta2 = requests.get('https://mindicador.cl/api')
-    respuesta3 = requests.get('https://rickandmortyapi.com/api/character')
-
     productos = respuesta.json()
     monedas = respuesta2.json()
-    aux = respuesta3.json()
-    personajes = aux['results']
     data = {
         'listaProductos': productos,
         'moneda' : monedas,
-        'personaje' : personajes,
     }
-    return render(request, 'core/productos/arbustos_api.html', data)
+    return render(request, 'core/productos/todos_api.html', data)
 
-#Productos
+#<-- Inicio Productos -->
 def arbustos(request):
     productos = Producto.objects.filter(tipo_id = "1").all()
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
@@ -126,13 +158,15 @@ def herramientas(request):
     }
     return render(request, 'core/productos/herramientas.html', data)
 
+#<-- Fin Productos -->
+
 #Subscripción
-@login_required
+@grupo_requerido('cliente')
 def subscripcion(request):
     return render(request, 'core/subscripcion.html')
 
 
-@login_required
+@grupo_requerido('cliente')
 def perfil(request):
     if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
         sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
@@ -147,12 +181,8 @@ def perfil(request):
 
 
 #Admin CRUD
-@login_required
+@grupo_requerido('vendedor')
 def menuadmin(request):
-
-    if request.user.username != 'admin':
-        return redirect('index')
-
     productos = Producto.objects.all()
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
@@ -169,11 +199,8 @@ def menuadmin(request):
 
     return render(request, 'core/crud/menuadmin.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def agregar(request):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     data = {
         'form': ProductoForm()
     }
@@ -185,11 +212,8 @@ def agregar(request):
 
     return render(request, 'core/crud/agregar.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def modificar(request, id):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     producto = Producto.objects.get(id=id); 
     data = {
         'form': ProductoForm(instance=producto) # LA INFO SE ALMACENA EN EL FORMULARIO
@@ -203,11 +227,8 @@ def modificar(request, id):
 
     return render(request, 'core/crud/modificar.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def eliminar(request, id):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     producto = Producto.objects.get(id=id); # OBTENEMOS UN PRODUCTO
     producto.delete()
 
@@ -220,12 +241,8 @@ def eliminar(request, id):
 
 
 # CRUD de los mensajes
-@login_required
+@grupo_requerido('vendedor')
 def menumensajes(request):
-
-    if request.user.username != 'admin':
-        return redirect('index')
-
     productos = Mensaje.objects.all()
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
@@ -242,11 +259,8 @@ def menumensajes(request):
 
     return render(request, 'core/crudmensajes/menumensajes.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def agregarm(request):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     data = {
         'form': MensajeForm()
     }
@@ -258,11 +272,8 @@ def agregarm(request):
 
     return render(request, 'core/crudmensajes/agregarm.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def modificarm(request, id):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     producto = Mensaje.objects.get(id=id); 
     data = {
         'form': MensajeForm(instance=producto) # LA INFO SE ALMACENA EN EL FORMULARIO
@@ -276,11 +287,8 @@ def modificarm(request, id):
 
     return render(request, 'core/crudmensajes/modificarm.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def eliminarm(request, id):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     producto = Mensaje.objects.get(id=id); # OBTENEMOS UN PRODUCTO
     producto.delete()
 
@@ -292,7 +300,7 @@ def eliminarm(request, id):
 
 #carro
 
-@login_required
+@grupo_requerido('cliente')
 def carrito(request):
     respuesta2 = requests.get('https://mindicador.cl/api/dolar')
     monedas = respuesta2.json()
@@ -327,6 +335,7 @@ def carrito(request):
     
     return render(request, 'core/carrito.html', data)
 
+
 def car_agregar(request, id):
     if Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).exists():
         carrito = Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).first()
@@ -338,18 +347,20 @@ def car_agregar(request, id):
         producto_restar_stock(id, 1)
         carrito.cantidad_prod = carrito.cantidad_prod + 1
         carrito.save()
+        messages.success(request, 'Producto agregado')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
     producto_restar_stock(id, 1)
     nuevo_item_carrito = Carrito()
-    nuevo_item_carrito.id_usuario = User.objects.get(id = request.user.id)
+    nuevo_item_carrito.id_usuario = Usuario.objects.get(id = request.user.id)
     nuevo_item_carrito.producto_carrito = Producto.objects.get(id = id)
     nuevo_item_carrito.cantidad_prod = 1
     nuevo_item_carrito.save()
-
+    messages.success(request, 'Producto agregado')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 #Esta funcion resta en 1 la cantidad del producto del carrito
+@grupo_requerido('cliente')
 def car_una_cantidad_menos(request, id):
     carrito = Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).first()
     if carrito.cantidad_prod == 1:
@@ -361,22 +372,27 @@ def car_una_cantidad_menos(request, id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 def producto_restar_stock(id, arestar):
     producto = Producto.objects.filter(id = id).first()
     producto.stock = producto.stock - arestar
     producto.save()
+
+
 
 def producto_sumar_stock(id, cantidad):
     producto = Producto.objects.filter(id = id).first()
     producto.stock = producto.stock + cantidad
     producto.save()
 
+@grupo_requerido('cliente')
 def car_eliminar(request, id):
     producto = Carrito.objects.filter(id_usuario = request.user.id, producto_carrito = id).first()
     producto_sumar_stock(id, producto.cantidad_prod)
     producto.delete()
     return redirect(to="carrito")
 
+@grupo_requerido('cliente')
 def car_eliminar_todo(request):
     carrito = Carrito.objects.filter(id_usuario = request.user.id)
     for i in carrito:
@@ -385,7 +401,7 @@ def car_eliminar_todo(request):
     return redirect(to="carrito")
 
 #orden
-@login_required
+@grupo_requerido('cliente')
 def checkout(request):
     respuesta2 = requests.get('https://mindicador.cl/api/dolar')
     monedas = respuesta2.json()
@@ -419,12 +435,13 @@ def checkout(request):
     
     return render(request, 'core/checkout.html', data)
 
+@grupo_requerido('cliente')
 def nuevo_pedido(request):
     #carrito y todo lo que contiene del usuario
     productos_carrito = Carrito.objects.filter(id_usuario = request.user.id).all()
     #nueva orden
     estado1 = EstadoOrden.objects.filter(id = 1).first()
-    orden = Orden.objects.create(id_usuario = request.user, estado_orden = estado1, creado_en = datetime.now().date(), modificado_en = datetime.now().date())
+    orden = Orden.objects.create(id_usuario = request.user, estado_orden = estado1, creado_en = datetime.now().date(), modificado_en = datetime.now().date(), direccion_envio=request.user.direccion)
     #falta precio
     total = 0
     for producto in productos_carrito:
@@ -452,7 +469,7 @@ def nuevo_pedido(request):
     productos_carrito.delete()
     return redirect(to="pedidos")
 
-@login_required
+@grupo_requerido('cliente')
 def pedidos(request):
 
     ordenes = Orden.objects.filter(id_usuario = request.user.id).all()
@@ -471,7 +488,7 @@ def pedidos(request):
 
     return render(request, 'core/pedidos.html', data)
 
-@login_required
+@grupo_requerido('cliente')
 def detalle_pedido(request, id):
     
     orden = Orden.objects.get(id = id)
@@ -484,12 +501,8 @@ def detalle_pedido(request, id):
     }
     return render(request, 'core/detalle_pedido.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def menupedidos(request):
-    
-    if request.user.username != 'admin':
-        return redirect('index')
-
     pedidos = Orden.objects.all()
     page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
     
@@ -507,11 +520,8 @@ def menupedidos(request):
     print(data['listaPedidos'])
     return render(request, 'core/crud/menupedidos.html', data)
 
-@login_required
+@grupo_requerido('vendedor')
 def actualizar_pedido(request, id):
-    if request.user.username != 'admin':
-       return redirect('index')
-
     pedido = Orden.objects.get(id=id); 
     data = {
         'aux': pedido,

@@ -33,6 +33,7 @@ class MensajeAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
+admin.site.register(Usuario)
 admin.site.register(TipoProducto, TipoProductoAdmin )
 admin.site.register(Marca, MarcaAdmin )
 admin.site.register(Mensaje, MensajeAdmin)

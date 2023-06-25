@@ -1,12 +1,10 @@
-function mensajeAgregar(id){
+function mensajeAgregar(mensaje){
     Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Producto agregado al carrito',
+        title: mensaje,
         showConfirmButton: false,
         timer: 1200
-      }).then(function() {
-        window.location.href = "/car_agregar/"+ id + "/";
-    })
+      })
 }

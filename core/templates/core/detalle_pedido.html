@@ -42,8 +42,9 @@
                               {% endfor %}
                       </tbody>
                     </table>
+                        <p> Direccion de envio: {{orden.direccion_envio }} </p>
                         <p>¿Suscrito al momento de la compra? : {% if orden.descuento_sub %}Si {% else %}No{% endif %}</p>
-                        Total orden: ${{orden.precio_orden}} 
+                        <p>Total orden: ${{orden.precio_orden}}</p> 
                     <p>Estado de la orden: {{orden.estado_orden.estado_orden}}</p>
                             {% if orden.estado_orden.id == 1 %}
                             <div class="progress">

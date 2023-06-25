@@ -7,14 +7,16 @@ router = routers.DefaultRouter()
 
 router.register('productos', ProductoViewset)
 router.register('tipo_productos', TipoProductoViewset)
+router.register('marcas', MarcaViewset)
+router.register('mensajes', MensajeViewset)
 
 urlpatterns = [
 
         #Api
         path('api/', include(router.urls)),
-
+        path('productos/todos/', todosAPI, name="todos_api"),
     	path('', index, name="index"),
-        path('productos/arbustos_api/', arbustosapi, name="arbustos_api"),
+        path('registro/', registro, name='registro'),
         # Productos
         path('productos/arbustos/', arbustos, name="arbustos"),
 		path('productos/flores/', flores, name="flores"),

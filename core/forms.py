@@ -1,6 +1,16 @@
 from django import forms
 from django.forms import ModelForm
 from .models import *
+from django.contrib.auth.forms import UserCreationForm
+class CreacionUsuarioForm(UserCreationForm):
+    first_name = forms.CharField(min_length=2,widget=forms.TextInput(attrs={"placeholder":"Ingrese su nombre"}))
+    last_name = forms.CharField(min_length=2,widget=forms.TextInput(attrs={"placeholder":"Ingrese su apellido"}))
+    direccion = forms.CharField(min_length=2,widget=forms.TextInput(attrs={"placeholder":"Ingrese su direccion"}))
+    email = forms.CharField(min_length=2,widget=forms.TextInput(attrs={"placeholder":"Ingrese su email"}))
+    username = forms.CharField(min_length=2,widget=forms.TextInput(attrs={"placeholder":"Ingrese su nombre de usuario (Se usará para ingresar)"}))
+    class Meta:
+        model = Usuario
+        fields = ['first_name', 'last_name',  'direccion', 'email', 'username', 'password1', 'password2']
 
 class ProductoForm(ModelForm):
 
