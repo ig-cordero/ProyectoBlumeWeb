@@ -21,11 +21,8 @@ class ProductoForm(ModelForm):
     
     class Meta:
         model = Producto
-        fields = '__all__'
-        widgets = {
-            'creado_en' : forms.SelectDateWidget(years=range(2020,2030)),
-            'modificado_en' : forms.SelectDateWidget(years=range(2020,2030))
-        }
+        fields = ['imagen', 'nombre', 'marca', 'descripcion', 'precio', 'stock', 'tipo']
+        
 
 
 class MensajeForm(ModelForm):
@@ -47,3 +44,10 @@ class EstadoOdenForm(ModelForm):
     class Meta:
         model = Orden
         fields = ['estado_orden']
+
+class FormularioDonacion(ModelForm):
+    monto_a_donar = forms.IntegerField(min_value=1000,widget=forms.NumberInput(attrs={"placeholder":"Ingrese monto a donar. Minimo $1000 CLP"}))
+    
+    class Meta:
+        model = Donacion
+        fields = ['monto_a_donar']

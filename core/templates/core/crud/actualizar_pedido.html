@@ -3,6 +3,7 @@
 {% load humanize %}
 {% block contenido %}
 {% load crispy_forms_tags %}
+<body>
 <div class="container-fluid">
     <div class="row">
         <div class="col-2"></div>
@@ -28,6 +29,7 @@
                             <th scope="col">ID del Pedido</th>
                             <th scope="col">cliente</th>
                             <th scope="col">precio del pedido</th>
+                            <th scope="col">¿Era subscriptor?</th>
                             <th scope="col">fecha de compra</th>
                             <th scope="col">fecha actualizacion del pedido</th>
                             <th scope="col">estado del pedido</th>
@@ -41,6 +43,7 @@
                                     <th scope="row">{{ aux.id }}</th>
                                     <td>{{ aux.id_usuario }}</td>
                                     <td>${{ aux.precio_orden }}</td>
+                                    <td>{% if aux.descuento_sub == 1 %}Si {% else %}No{% endif %}</td>
                                     <td>{{ aux.creado_en }}</td>
                                     <td>{{ aux.modificado_en }}</td>
                                     <td><form action="" method="POST">
@@ -71,8 +74,20 @@
         <div class="col-2 d-none d-lg-block "></div>
     </div>
 </div>
-
-
+    {% if messages %}
+            {% for message in messages %}
+              <script>
+                Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Pedido actualizado',
+                showConfirmButton: false,
+                timer: 1200
+              }) </script> 
+            {% endfor %}
+        {% endif %}
+</body>
 {% endblock contenido %}
 {% block js %}
     <script >function eliminarProducto(id) {

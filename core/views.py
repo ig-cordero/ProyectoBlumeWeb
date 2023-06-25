@@ -9,6 +9,8 @@ from rest_framework import viewsets
 from .serializers import *
 import requests
 from django.contrib.auth.models import Group
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 #Creando una clase que va a permitir la transformacion
@@ -161,20 +163,67 @@ def herramientas(request):
 #<-- Fin Productos -->
 
 #Subscripción
+def fundacion(request):
+    data = {
+        'form': FormularioDonacion()
+    }
+    if request.method == 'POST':
+        formulario = FormularioDonacion(data=request.POST)
+        if formulario.is_valid():
+            #print("Super print debuggeador")
+            #si por algun motivo el usuario vuelve apretar el boton de donar, pero no completo la donacion
+            #el monto anterior se borrara
+            if Donacion.objects.filter(id_usuario_id = request.user.id).exists():
+                Donacion.objects.filter(id_usuario_id = request.user.id).delete()
+            
+            Donacion.objects.create(id_usuario_id = request.user.id, monto_a_donar = formulario.cleaned_data['monto_a_donar'])
+            return redirect(to="subscripcion")
+        
+        data['form'] = formulario
+
+    return render(request, 'core/fundacion.html', data)
+
 @grupo_requerido('cliente')
 def subscripcion(request):
-    return render(request, 'core/subscripcion.html')
+    json_dolar = requests.get('https://mindicador.cl/api/dolar')
+    monedas = json_dolar.json()
+    valor_usd = monedas['serie'][0]['valor']
 
+    if Donacion.objects.filter(id_usuario_id = request.user.id).exists() == False:
+        return redirect(to="fundacion")       
+    
+    monto = Donacion.objects.get(id_usuario_id = request.user.id)
+    donacion_usd = round(monto.monto_a_donar/valor_usd, 2)
+    data = {
+        'donacion': monto,
+        'donacion_usd': donacion_usd,
+    }
 
+    return render(request, 'core/subscripcion.html', data)
+
+def agregar_sub(request):
+    if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
+        print("hola")
+        sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
+        sub.suscrito_el = datetime.now().date()
+        prox_mes = sub.renovacion_el + relativedelta(months=1)
+        sub.renovacion_el = prox_mes
+        sub.save()
+        return redirect(to="perfil")
+    
+    prox_mes = datetime.now().date() + relativedelta(months=1)
+    Suscripcion.objects.create(id_usuario_id = request.user.id, suscrito_el = datetime.now().date(), renovacion_el = prox_mes)
+
+    return redirect(to="perfil")
+#Fin cosas subs
 @grupo_requerido('cliente')
 def perfil(request):
     if Suscripcion.objects.filter(id_usuario = request.user.id).exists():
         sub = Suscripcion.objects.filter(id_usuario = request.user.id).first()
-        esta_suscrito = sub.estado_sub
     else:
-        esta_suscrito = False
+        sub = False
     data = {
-        'sub': esta_suscrito,
+        'sub': sub,
     }
     return render(request, 'core/perfil.html', data)
 
@@ -430,7 +479,8 @@ def checkout(request):
         'valor' : round(precio_usd, 2),
         'precio_clp': precio_clp,
         'descuento' : descuento,
-        'is_sub' : esta_suscrito
+        'is_sub' : esta_suscrito,
+        'valor_dolar': valor_usd,
     }
     
     return render(request, 'core/checkout.html', data)

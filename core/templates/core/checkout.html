@@ -87,6 +87,7 @@
                             <div class="card-title ms-4 mt-2"><h4>Resumen de compra</h4></div>
                             <p>Precio en pesos chilenos: {{ precio_clp | intcomma }}</p>
                             <p>Precio en dolares: {{ valor }}</p>
+                            <p>Tipo de cambio: ${{valor_dolar}}CLP = 1 dolar</p>
                             <div id="btnPaypal"> </div>
                            <a href="{% url 'registro_pedido' %}">prueba</a> 
                             

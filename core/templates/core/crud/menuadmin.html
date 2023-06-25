@@ -33,6 +33,7 @@
                             <th scope="col">stock</th>
                             <th scope="col">tipo</th>
                             <th scope="col">imagen</th>
+                            <th scope="col"></th>
                             <th scope="col">acciones</th>
                           </tr>
                         </thead>
@@ -47,13 +48,17 @@
                                     <td>{{ aux.precio | intcomma }}</td>
                                     <td>{{ aux.stock }}</td>
                                     <td>{{ aux.tipo }}</td>
-                                    <td style="text-align: center;">{% if aux.imagen %}
-                                            <img src="{{ aux.imagen.url }}" alt="Card image" style="height: 100px; text-align: center;"></td>
+                                    
+                                    <td style="text-align: center;">
+                                        {% if aux.imagen %}
+                                            <img src="{{ aux.imagen.url }}" alt="Card image" style="height: 100px; text-align: center;">
                                         {% else %}
                                             <img src="{% static 'core/img/logo.jpg' %}" alt="Sin imagen" style="height: 100px;">
                                             <h6 style="">No imagen</h6>
-                                        {% endif %}
+                                       {% endif %} </td>
+                                    <td>creado el:<p> {{ aux.creado_en }}</p> modificado el:<p> {{ aux.modificado_en }}</p></td>
                                     <td>
+                                    
                                         <div class="container">
                                             <!--Modificar-->
                                             <a href="{% url 'modificar' aux.id %}" class="btn btn-warning mb-2 " style="width: 100px;">modificar</a>

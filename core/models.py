@@ -30,8 +30,8 @@ class Producto(models.Model):
     precio = models.IntegerField()
     stock = models.IntegerField()
     tipo = models.ForeignKey(TipoProducto, on_delete=models.CASCADE)
-    creado_en = models.DateField()
-    modificado_en = models.DateField(blank=True, null=True)
+    creado_en = models.DateField(auto_now_add=True)
+    modificado_en = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.nombre
@@ -113,3 +113,9 @@ class Suscripcion(models.Model):
             return False
         else:
             return True
+
+class Donacion(models.Model):
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    monto_a_donar = models.IntegerField()
+    def __str__(self):
+        return self.id_usuario

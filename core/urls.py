@@ -23,8 +23,10 @@ urlpatterns = [
         path('productos/herramientas/', herramientas, name="herramientas"),
         path('productos/macetas/', macetas, name="macetas"),
         path('productos/sustratos/', sustratos, name="sustratos"),
-        # Pagos
+        # Fundacion/Donar/Sub
+        path('fundacion/', fundacion, name="fundacion"),
         path('subscripcion/', subscripcion, name="subscripcion"),
+        path('add_subs/', agregar_sub, name="agregar_sub"),
         # CRUD
         path('agregar/', agregar, name="agregar"),
         path('modificar/<id>/', modificar, name="modificar"),
