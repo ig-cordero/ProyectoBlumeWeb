@@ -384,7 +384,7 @@ def carrito(request):
     
     return render(request, 'core/carrito.html', data)
 
-
+@grupo_requerido('cliente')
 def car_agregar(request, id):
     if Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).exists():
         carrito = Carrito.objects.filter(id_usuario = request.user.id).filter(producto_carrito = id).first()
